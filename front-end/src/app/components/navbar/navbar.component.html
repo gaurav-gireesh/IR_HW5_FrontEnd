@@ -1,0 +1,175 @@
+<div class="container-fluid" style="margin-top:2%;">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-darks">
+    <a class="navbar-brand" href="http://newsday.com">NewsDay</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" 
+    data-target="#navbarColor02" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation" >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarColor02">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#"(click)="clear()" style="font-size:1.5em">Home <span class="sr-only">(current)</span></a>
+        </li>
+         </ul>
+
+      <form class="form-inline my-2 my-lg-0" (submit)="process()" autocomplete="off" id="myform" name="myform">
+         <span *ngIf="pageRank"style="font-size:1.5em">Page Rank?&nbsp;&nbsp;</span>
+         <span *ngIf="!pageRank" style="font-size:1.5em;color:grey;">Lucene&nbsp;&nbsp;</span> 
+        <input name="pageRank" [(ngModel)]="pageRank" class="form-check-input" type="checkbox" value="" checked="">
+        &nbsp;&nbsp;
+        
+        
+        <div class="autocomplete" >
+          <input name="keyword" id="keyword" class="form-control mr-sm-2 "  style="font-size:1.2em;"   type="text" placeholder="Search" [(ngModel)]="keyword"  (keyup)="suggest($event)"/>
+        </div>
+
+       
+        <button class="btn btn-secondary my-2 my-sm-0 btn-default" type="submit"><span class="glyphicons glyphicons-database-search"></span>SEARCH</button>&nbsp;&nbsp;
+       
+      </form>
+      <button class="btn btn-danger" (click)=clear()>CLEAR</button>
+
+    </div>
+  </nav>
+
+
+
+
+
+
+  <!--RESULTS -->
+ 
+     
+
+
+
+
+
+<!-- New design for showing up results -->
+
+
+<div *ngIf="result && result['response']['docs'].length>0" style="border:solid 4px coral;margin-top:2%;padding:1%;border-radius:20px;">
+    <br/>
+    <br/>
+    &nbsp;&nbsp;<span *ngIf="correctedKeywords" style="font-size:1.5em">Did you mean  &nbsp;&nbsp;&nbsp; <b>{{this.correctedKeywords}}&nbsp;?</b></span><br/><br/>
+  <span style="font-size:1.5em; align-self: center;font-style:italic;"> &nbsp;Showing results &nbsp; &nbsp; &nbsp; &nbsp; 1 - {{min(10,result['response']['numFound'])}} &nbsp; of &nbsp;&nbsp;  <strong>{{result['response']['numFound']}}</strong>&nbsp;&nbsp;&nbsp;for : &nbsp;&nbsp;&nbsp; <span *ngIf="!correctedKeywords"><strong><i>{{keywordStatic}}</i></strong></span>
+  <span *ngIf="correctedKeywords"><strong><i>{{correctedKeywords}}</i></strong></span>
+</span>
+          
+  <br>
+  <br><br/>
+  
+
+
+
+
+
+
+
+
+<div  *ngFor="let doc of result['response']['docs']; let i = index"   style="border-radius:10px;"  >
+ 
+ <div  style="background:white">
+
+
+ <div  class="docTitle">
+
+   <a  style="text-decoration: underline" *ngIf="doc['og_url'] && doc['og_url'].length>0"style="font-size:1em" href="{{doc['og_url'][0]}}" target="_blank">
+     {{doc['title']}}
+    </a>
+   <a  style="text-decoration: underline" *ngIf="!(doc['og_url'] && doc['og_url'].length>0)"style="font-size:1em" href="{{doc['gg_web_url']}}" target="_blank">
+     {{doc['title']}}
+    </a>
+
+ </div>
+
+<br/>
+ <div class="docLink">
+   <a   *ngIf="doc['og_url'] && doc['og_url'].length>0"style="font-size:1em;font-color:black;" href="{{doc['og_url'][0]}}" target="_blank">
+     <span style="color:green;">{{doc['og_url'][0]}}</span>
+    </a>
+   <a  *ngIf="!(doc['og_url'] && doc['og_url'].length>0)"style="cfont-size:1em;font-color:black;" href="{{doc['gg_web_url']}}" target="_blank">
+     <span style="color:green;">{{doc['gg_web_url']}}
+
+     </span></a>
+
+
+ </div>
+
+<br/>
+ 
+
+ <!-- <div  class="docSnippet">
+     <span  *ngIf="doc['og_description'] && doc['og_description'].length>0"style="font-size:1em" >
+       {{doc['og_description'][0]}}
+      </span>
+     <span *ngIf="!(doc['og_description'] && doc['og_description'].length>0)"style="font-size:1em" >
+       N/A
+      </span>
+
+ </div> -->
+ <div  class="docSnippet">
+  <span  style="font-size:1em" >
+    {{generate_snippet(doc)}}
+   </span>
+  
+
+</div>
+
+ 
+
+  </div>
+
+ <hr style="color:red;">
+ <br/>
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+  <!-- Custom autocomplete related scripts -->
